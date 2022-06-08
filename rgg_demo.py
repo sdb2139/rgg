@@ -76,6 +76,9 @@ def pt_check(pt, mode, arg):
         # TODO: IMPLEMENT THIS
         return -1
     if mode == "disk":
+        if arg[0] > arg[1]:
+            print("Error: inner radius bigger than outer radius")
+            return -1
         # check if points are in outer part of a disk
         s = 0
         # use generalized pythagorean formula for distance from center
@@ -113,7 +116,10 @@ def gen_vert(n, bound, dim, mode, arg):
         # generate a random point
         pt = gen_pts(bound, dim)
         # if the point is in the specified bounds
-        if(pt_check(pt, mode, arg) > 0):
+        valid = pt_check(pt, mode, arg)
+        if valid == -1:
+            sys.exit("Error in point generation or mode not implemented yet")
+        if(valid > 0):
             # we append it to the list and give it a number to identify it
             pts.append([len(pts),pt])
     # we finish by returning the list of all points and their coordinates
@@ -198,3 +204,27 @@ if __name__ == "__main__":
         # test out generating a graph
         G = const_graph(75, 128, 2, "disk", [20,40], 10)
         plot_graph(G[0], G[1])
+    else:
+        # number of nodes to graph
+        n =  int(sys.argv[1])
+        # integer bounds on the coordinates generated
+        bounds =  int(sys.argv[2])
+        # dimension of points
+        dim =  int(sys.argv[3])
+        # max distance for points to have an edge
+        dist = int(sys.argv[4])
+        # mode of bounds
+        mode = sys.argv[5]
+        # args for the mode
+        if mode == "circle":
+            args =  int(sys.argv[6])
+        else:
+            # if i implement nbox or custom ill have to change this
+            # slightly
+            args = [None]*2
+            args[0] =  int(sys.argv[6])
+            args[1] =  int(sys.argv[7])
+        G = const_graph(n,bounds,dim,mode,args,dist)
+        plot_graph(G[0],G[1])
+
+
