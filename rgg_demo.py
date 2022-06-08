@@ -12,10 +12,12 @@ this file is a quick mockup/demo to do the following:
 networkx is a library for network/graph computations
 matplot is for outputing the graph
 random is used for prng generation of points (nodes)
+numpy is used for storing the adjacency matrix in matrix form
 """
 import networkx as nx
 import matplotlib as mp
 import random as rd
+import numpy as np
 import sys
 
 # arbitrary number used as seed unless one is specified
@@ -178,18 +180,23 @@ def const_graph(n, bound, dim, mode, arg, dist):
 
     # now we have everything we need to build our initial graph
     G = nx.Graph()
+
+    # we do self-loops (edges from a node to itself) seperately
+    # so that we can avoid drawing them when we draw the graph
+    for i in range(0,n):
+        G.add_edge(i,i)
     G.add_edges_from(edges)
 
     # now we return G and position data for G
-    return G, pos
+    return G, pos, edges
 
 """
 function that does basic stuff for plotting a graph
 
 this is mostly so i don't need to mess around with matplotlib too much
 """
-def plot_graph(graph, pos):
-    nx.draw_networkx(graph, pos)
+def plot_graph(graph, pos, edges):
+    nx.draw_networkx(graph, pos, edgelist=edges)
 
     # Set margins for the axes so that nodes aren't clipped
     ax = mp.pyplot.gca()
@@ -203,7 +210,7 @@ if __name__ == "__main__":
     if len(sys.argv) == 1:
         # test out generating a graph
         G = const_graph(75, 128, 2, "disk", [20,40], 10)
-        plot_graph(G[0], G[1])
+        plot_graph(G[0], G[1], G[2])
     else:
         # number of nodes to graph
         n =  int(sys.argv[1])
@@ -225,6 +232,12 @@ if __name__ == "__main__":
             args[0] =  int(sys.argv[6])
             args[1] =  int(sys.argv[7])
         G = const_graph(n,bounds,dim,mode,args,dist)
-        plot_graph(G[0],G[1])
+       
+        print(G[1])
+
+        print("Adjacency matrix of the graph:")
+        print(nx.adjacency_matrix(G[0]))
+        
+        plot_graph(G[0],G[1],G[2])
 
 
