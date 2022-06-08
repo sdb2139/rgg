@@ -184,7 +184,7 @@ def const_graph(n, bound, dim, mode, arg, dist):
     # we do self-loops (edges from a node to itself) seperately
     # so that we can avoid drawing them when we draw the graph
     for i in range(0,n):
-        G.add_edge(i,i)
+        G.add_node(i)
     G.add_edges_from(edges)
 
     # now we return G and position data for G
